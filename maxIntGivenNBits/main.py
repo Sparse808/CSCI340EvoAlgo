@@ -53,10 +53,10 @@ def main():
 
     popSize = 10
     tournSize = 5
-    n = 10
+    n = 20
     crossoverRate = .5
-    mutationRate = .2
-    generations = 10000
+    mutationRate = .1
+    generations = 1000
 
     population = createPop(popSize, n)
     printChomo(population)
@@ -66,12 +66,17 @@ def main():
         matingPool = createPool(population, fitnessLookup, tournSize, popSize)
         crossover = createCrossOver(matingPool, crossoverRate,popSize, n)
         mutation = createMutate(crossover, mutationRate, popSize, n)
-        population = mutation
+
         maxValue = fitnessLookup[0]
-        for item in fitnessLookup:
-            if item > maxValue:
-                maxValue = item
-        print("Curr Max:", maxValue)
+        fitnessLookup = findFitness(population)
+        maxValue = max(fitnessLookup)
+        bestIndex = fitnessLookup.index(maxValue)
+        bestChromosome = population[bestIndex][:]  # copy best
+
+        print(f"Gen {generations:4d} | Max fitness: {maxValue}")
+
+        population = [bestChromosome] + mutation[1:]
+        popSize = len(population)
 
     printChomo(population)
 
