@@ -1,4 +1,5 @@
-from random import choices
+from random import choices, random, randint
+
 
 def printChomo(chromos: list):
     print("set:")
@@ -32,22 +33,42 @@ def createPool(population: list[list[int]], fitnessLookup: list[int], tournSize:
 
     return matingPool
 
+def createCrossOver(matingPool: list[list[int]], crossoverRate: float, popSize: int, n: int) -> list[list[int]]:
+    for i in range(0, popSize, 2):
+        if random() < crossoverRate:
+            position = randint(0, n - 1)
+            matingPool[i][position], matingPool[i+1][position] = matingPool[i+1][position], matingPool[i][position]
+
+    return matingPool
+
+def createMutate(matingPool: list[list[int]], mutationRate: float, popSize: int, n: int) -> list[list[int]]:
+    for i in range(popSize):
+        if random() < mutationRate:
+            position = randint(0, n-1)
+            matingPool[i][position] = (matingPool[i][position] +1) %2
+            
+    return matingPool
 def main():
     print("starting")
 
     popSize = 10
     tournSize = 5
     n = 10
+    crossoverRate = .5
+    mutationRate = .2
+    generations = 100
 
     population = createPop(popSize, n)
     printChomo(population)
 
-    fitnessLookup = findFitness(population)
-    printChomo(fitnessLookup)
+    for generations in range(generations):
+        fitnessLookup = findFitness(population)
+        matingPool = createPool(population, fitnessLookup, tournSize, popSize)
+        crossover = createCrossOver(matingPool, crossoverRate,popSize, n)
+        mutation = createMutate(crossover, mutationRate, popSize, n)
+        population = mutation
 
-
-    matingPool = createPool(population, fitnessLookup, tournSize, popSize)
-    printChomo(matingPool)
+    
 
 if __name__ == "__main__":
     main()
