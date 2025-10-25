@@ -56,7 +56,7 @@ def main():
     n = 10
     crossoverRate = .5
     mutationRate = .2
-    generations = 100
+    generations = 10000
 
     population = createPop(popSize, n)
     printChomo(population)
@@ -67,6 +67,13 @@ def main():
         crossover = createCrossOver(matingPool, crossoverRate,popSize, n)
         mutation = createMutate(crossover, mutationRate, popSize, n)
         population = mutation
+        maxValue = fitnessLookup[0]
+        for item in fitnessLookup:
+            if item > maxValue:
+                maxValue = item
+        print("Curr Max:", maxValue)
+
+    printChomo(population)
 
     
 
